@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="bicycle_urdf">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-1.11022302462516E-16 6.93889390390723E-18 -4.9999999997552E-06"
+        rpy="0 0 0" />
+      <mass
+        value="9.99999999988803E-11" />
+      <inertia
+        ixx="8.41666666656725E-20"
+        ixy="3.87708396568136E-32"
+        ixz="3.14857948619163E-31"
+        iyy="8.41666666661441E-20"
+        iyz="8.10292695967426E-34"
+        izz="1.66666666665214E-19" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.627450980392157 0.627450980392157 0.627450980392157 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="j1">
+    <inertial>
+      <origin
+        xyz="0.00302595700545838 -0.000975877120958684 -0.00293290086320985"
+        rpy="0 0 0" />
+      <mass
+        value="3.74892369130333" />
+      <inertia
+        ixx="0.0958050362817747"
+        ixy="1.02803107334086E-05"
+        ixz="0.0399683787244824"
+        iyy="0.147882577678996"
+        iyz="3.86993701148036E-05"
+        izz="0.0560581173986548" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j1.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.96078431372549 0.96078431372549 0.96078431372549 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j1.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j1"
+    type="fixed">
+    <origin
+      xyz="0 0 0.57631"
+      rpy="-1.3451 1.5708 -1.3451" />
+    <parent
+      link="base_link" />
+    <child
+      link="j1" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="j2">
+    <inertial>
+      <origin
+        xyz="0.0127070251660349 0.00441411012704336 -0.211373289295777"
+        rpy="0 0 0" />
+      <mass
+        value="0.640712092512939" />
+      <inertia
+        ixx="0.00428865525878776"
+        ixy="-3.03162988731464E-08"
+        ixz="4.53378179209277E-06"
+        iyy="0.00342311572543809"
+        iyz="9.14164975701882E-09"
+        izz="0.00100290011808245" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j2.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.0980392156862745 0.0980392156862745 0.0980392156862745 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j2.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j2"
+    type="revolute">
+    <origin
+      xyz="-0.31644 0 0.35759"
+      rpy="3.1416 -1.2334 -3.1416" />
+    <parent
+      link="j1" />
+    <child
+      link="j2" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="j3">
+    <inertial>
+      <origin
+        xyz="2.52125289074145E-05 0.000317863274537859 -4.65947089642142E-05"
+        rpy="0 0 0" />
+      <mass
+        value="1.42289136054877" />
+      <inertia
+        ixx="0.070138150051789"
+        ixy="4.96979336340015E-05"
+        ixz="-3.90101378012974E-08"
+        iyy="0.0701409839165181"
+        iyz="-2.65664690939405E-07"
+        izz="0.140170476290511" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j3.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.96078431372549 0.96078431372549 0.964705882352941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j3.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j3"
+    type="revolute">
+    <origin
+      xyz="0.00011884 -0.001 -0.5832"
+      rpy="-1.5708 0.36721 0" />
+    <parent
+      link="j2" />
+    <child
+      link="j3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="j6">
+    <inertial>
+      <origin
+        xyz="6.02738069560016E-05 0.000248987184411822 -0.0130485895957075"
+        rpy="0 0 0" />
+      <mass
+        value="0.0447533363490518" />
+      <inertia
+        ixx="2.73597575072648E-05"
+        ixy="2.90698683533285E-09"
+        ixz="1.00824709103574E-09"
+        iyy="3.94436680135725E-06"
+        iyz="2.4488147186722E-07"
+        izz="2.72748270340559E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j6.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.96078431372549 0.96078431372549 0.964705882352941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j6.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j6"
+    type="fixed">
+    <origin
+      xyz="0.081171 -0.00088133 0.016378"
+      rpy="3.1416 1.3963 3.1416" />
+    <parent
+      link="j2" />
+    <child
+      link="j6" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="j4">
+    <inertial>
+      <origin
+        xyz="-2.16675741683646E-05 0.000308943705058295 -0.000220021007073381"
+        rpy="0 0 0" />
+      <mass
+        value="1.46485195200999" />
+      <inertia
+        ixx="0.0702709436084389"
+        ixy="-4.9670079317029E-05"
+        ixz="-3.69393439992504E-08"
+        iyy="0.0702755326525907"
+        iyz="2.65512292708636E-07"
+        izz="0.140420791677307" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j4.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.96078431372549 0.96078431372549 0.964705882352941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j4.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j4"
+    type="revolute">
+    <origin
+      xyz="0.25864 -0.000175 -0.43731"
+      rpy="-1.5708 -1.5409 0" />
+    <parent
+      link="j1" />
+    <child
+      link="j4" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="j5">
+    <inertial>
+      <origin
+        xyz="0.0005322847381527 0.000833019402854841 0.000142111645709708"
+        rpy="0 0 0" />
+      <mass
+        value="0.0388487185787584" />
+      <inertia
+        ixx="1.68129827468216E-05"
+        ixy="-5.30926472674138E-08"
+        ixz="-6.55539131680572E-08"
+        iyy="1.48584718254075E-05"
+        iyz="8.9546807462309E-09"
+        izz="3.01653762025503E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j5.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.627450980392157 0.627450980392157 0.627450980392157 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bicycle_urdf/meshes/j5.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j5"
+    type="fixed">
+    <origin
+      xyz="-0.26811 0 0.4581"
+      rpy="3.1416 -1.5143 3.1416" />
+    <parent
+      link="j1" />
+    <child
+      link="j5" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>

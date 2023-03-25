@@ -1,0 +1,18 @@
+<launch>
+
+  <arg name="use_remote" default="0" />
+  <env name="ROS_MASTER_URI" value="http://192.168.12.179:11311/" if="$(arg use_remote)"/>
+  <group ns="turtlesim1">
+    <node pkg="turtlesim" name="sim" type="turtlesim_node"/>
+  </group>
+
+  <group ns="turtlesim2">
+    <node pkg="turtlesim" name="sim" type="turtlesim_node"/>
+  </group>
+
+  <node pkg="turtlesim" name="mimic" type="mimic">
+    <remap from="input" to="turtlesim1/turtle1"/>
+    <remap from="output" to="turtlesim2/turtle1"/>
+  </node>
+
+</launch>

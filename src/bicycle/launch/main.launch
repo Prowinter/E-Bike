@@ -1,0 +1,4 @@
+<launch>
+  <arg name="use_remote" default="0" />
+  <env name="ROS_MASTER_URI" value="http://192.168.12.179:11311/" if="$(arg use_remote)"/>
+</launch>
