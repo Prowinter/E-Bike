@@ -3,24 +3,23 @@
 from __future__ import print_function
 
 from can_communication.srv import *
-
+from can_communication.msg import *
 import rospy
 import can
 import time
 import atexit
 
-from VESC_Motor import *
 from CAN_Servo import *
+from VESC_Motor import *
 
-VESC_ID_1 = 0x68
-VESC_ID_2 = 0x69
+CAN_ID = 0x0E
 
 def on_exit():
     notifier.stop()
     bus.shutdown()
 
 def Process_Message(msg):
-    print("Received message:", msg.data)
+    # rospy.logdebug("Received message:", msg.data)
     # 12 bits ADC -> Angle
     if (msg.arbitration_id == 0x0E):
         servo.Process_Message(msg)
@@ -32,8 +31,8 @@ def Process_Message(msg):
         print("error")
 
 def handle_can_servo(req):
-    result = servo.Servo_Direction(req.Servo_Direction)
-    print("Angle={}".format(result))
+    result = servo.RotationAngle(req.Servo_Direction)
+    # print("Angle={}".format(result))
     response = CANResponse()
     response.success = True
     response.message = "OK"
@@ -41,7 +40,7 @@ def handle_can_servo(req):
 
 def handle_motor_1(req):
     result = motor_1.SetRPM(req.Motor_rpm)
-    print("RPM={}".format(result))
+    # print("RPM={}".format(result))
     response = VESCResponse()
     response.success = True
     response.message = "OK"
@@ -49,12 +48,17 @@ def handle_motor_1(req):
 
 def handle_motor_2(req):
     result = motor_2.SetDuty(req.Motor_duty)
-    print("Duty={}".format(result))
+    # print("Duty={}".format(result))
     response = VESCResponse()
     response.success = True
     response.message = "OK"
     return response
 
+rospy.init_node('can_server')
+
+can_servo_pub = rospy.Publisher('Bicycle/CAN_Servo_info', Bicycle, queue_size=10)
+motor_1_pub = rospy.Publisher('Bicycle/VESC_Motor_1_info', Bicycle, queue_size=10)
+motor_2_pub = rospy.Publisher('Bicycle/VESC_Motor_2_info', Bicycle, queue_size=10)
 
 logger = can.CSVWriter("/home/prowinter/Desktop/Bicycle_ws/log/log.csv") 
 
@@ -67,9 +71,9 @@ filters = [
 
 bus = can.interface.Bus(bustype='slcan', channel='/dev/ttyACM0', bitrate=1000000, can_filters=filters)
 
-servo = CAN_Servo(bus)
-motor_1 = VESC_Motor(VESC_ID_1,bus)
-motor_2 = VESC_Motor(VESC_ID_2,bus)
+servo = CAN_Servo(CAN_ID,bus,can_servo_pub)
+motor_1 = VESC_Motor(VESC_ID_1,bus,motor_1_pub)
+motor_2 = VESC_Motor(VESC_ID_2,bus,motor_2_pub)
 
 listeners = [
     Process_Message,    # Callback function, print the received messages
@@ -79,8 +83,9 @@ listeners = [
 notifier = can.Notifier(bus, listeners)
 atexit.register(on_exit)
 
-rospy.init_node('can_server')
+
 a = rospy.Service('CAN_Servo', CAN, handle_can_servo)
 b = rospy.Service('VESC_Motor_1', VESC, handle_motor_1)
 c = rospy.Service('VESC_Motor_2', VESC, handle_motor_2)
+# motor_1.SetRPM(1000)
 rospy.spin()
