@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   can_communication
   dynamic_reconfigure
+  tf
   tf2
   tf2_ros
 )
@@ -141,6 +142,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/bicycle_node.cpp)
 add_executable(bicycle_balance src/balance.cpp)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -151,11 +153,6 @@ add_executable(bicycle_balance src/balance.cpp)
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(bicycle_balance ${PROJECT_NAME}_gencfg)
-
-## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
 
 target_link_libraries(bicycle_balance
   ${catkin_LIBRARIES}

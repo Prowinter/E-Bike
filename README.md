@@ -18,6 +18,8 @@ You can assign private parameters for a node directly from the command-line usin
 
 ### URDF 
 Update your file my_robot.urdf and run it through the parser:4
+http://wiki.ros.org/urdf#Verification
+
 
 ```
 $ check_urdf my_robot.urdf

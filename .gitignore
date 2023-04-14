@@ -2,4 +2,10 @@ build/
 devel/
 src/imu_tools/
 src/learning_tf2/
-*/__pycache__/
+
+**/__pycache__/
+
+**/*.pdf
+**/*.gv
+
+log/log.csv

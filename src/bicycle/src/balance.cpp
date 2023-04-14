@@ -37,29 +37,34 @@ ros::ServiceClient CAN_Servo_Client;
 ros::ServiceClient VESC_Motor_1_Client;
 ros::ServiceClient VESC_Motor_2_Client;
 ros::Publisher IMU_ROLL_Pbu;
+ros::Timer timer;
+
+bool Switch = false;
 
 void callback(bicycle::LQRConfig &config, uint32_t level) {
-  // Ebike.LQR_Kp = config.LQR_Kp;
-  // Ebike.LQR_Kv = config.LQR_Kv;
-  // Ebike.LQR_Ks = config.LQR_Ks;
-  #ifdef _DEBUG_IMU
-  ROS_INFO("Reconfigure Request: %f %f %f", Ebike.LQR_Kp, Ebike.LQR_Kv, Ebike.LQR_Ks);
-  #endif
+  Ebike.LQR_Kp = config.LQR_Kp;
+  Ebike.LQR_Kv = config.LQR_Kv;
+  Ebike.LQR_Ks = config.LQR_Ks;
+  Switch = config.LQR_Switch;
+  ROS_WARN("Reconfigure Request: %f %f %f %d", Ebike.LQR_Kp, Ebike.LQR_Kv, Ebike.LQR_Ks, Switch);
+  // #ifdef _DEBUG_IMU
+  // ROS_INFO("Reconfigure Request: %f %f %f", Ebike.LQR_Kp, Ebike.LQR_Kv, Ebike.LQR_Ks);
+  // #endif
 }
 
 void timerCallback(const ros::TimerEvent& event)
 {
   static double last_ang;
   Ebike.Roll_Angular_Velocity = (Ebike.Roll-last_ang)/Time_Sec;
-  // ROS_INFO("Roll_Angular_Velocity:%f", Ebike.Roll_Angular_Velocity);
+  ROS_WARN("Roll:%f", Ebike.Roll);
   last_ang = Ebike.Roll;
-
-
-  can_communication::CAN srv;
-  srv.request.Servo_Direction = 2049;
-  if (!CAN_Servo_Client.call(srv))
-  {
-    ROS_ERROR("Failed to call service can_server");
+  if(Switch){
+    can_communication::VESC srv;
+    srv.request.Motor_rpm = 1000;
+    if(!VESC_Motor_1_Client.call(srv))
+    {
+      ROS_ERROR("Failed to call service VESC_Motor_1_Client");
+    }
   }
 }
 
@@ -70,9 +75,13 @@ void CAN_Callback(const can_communication::Bicycle& msg){
 }
 
 void Motor_1_Callback(const can_communication::Bicycle& msg){
+  static int flag = 0;
   if(msg.Device_ID == VESC_ID_1){
     Ebike.Balance_Motor_rpm = msg.Motor_rpm;
     Ebike.Bicycle_voltage = msg.Bicycle_voltage;
+    Ebike.Roll = msg.Motor_Roll;
+    ROS_INFO("Roll:%f", Ebike.Roll);
+    if(!flag) {flag = 1;timer.start();}
   }
 }
 
@@ -108,8 +117,6 @@ void imuCallback(const sensor_msgs::ImuConstPtr& msg){
   roll_msg.data = angles::to_degrees(roll);
   Ebike.Roll = angles::to_degrees(roll);
   IMU_ROLL_Pbu.publish(roll_msg);
-
-
   
   int Motor_Set_Rpm =(int)((angles::to_degrees(roll) - Angle_Offset) * Ebike.LQR_Kp + Ebike.Roll_Angular_Velocity * Ebike.LQR_Kv + Ebike.Balance_Motor_rpm * Ebike.LQR_Ks);
   // ROS_INFO("p:%.3f ,v:%.3f\r\n",Ebike.LQR_Kp,Ebike.LQR_Kv);
@@ -131,11 +138,11 @@ void imuCallback(const sensor_msgs::ImuConstPtr& msg){
 int main(int argc, char** argv){
   ros::init(argc, argv, "bicycle_balance");
 
-  ros::NodeHandle nn;
-  IMU_ROLL_Pbu = nn.advertise<std_msgs::Float32>("/Bicycle/balance/imu_roll", 30);
+  // ros::NodeHandle nn;
+  // IMU_ROLL_Pbu = nn.advertise<std_msgs::Float32>("/Bicycle/balance/imu_roll", 30);
 
-  ros::NodeHandle node;
-  ros::Subscriber sub = node.subscribe("imu/imu/data", 1000, &imuCallback);
+  // ros::NodeHandle node;
+  // ros::Subscriber sub = node.subscribe("imu/imu/data", 1000, &imuCallback);
 
   ros::NodeHandle can_node;
   ros::Subscriber can_sub = can_node.subscribe("Bicycle/CAN_Servo_info", 1000, &CAN_Callback);
@@ -157,7 +164,8 @@ int main(int argc, char** argv){
   server.setCallback(f);
 
   ros::NodeHandle nh;
-  ros::Timer timer = nh.createTimer(ros::Duration(Time_Sec), timerCallback);
+  timer = nh.createTimer(ros::Duration(Time_Sec), timerCallback);
+  timer.stop();
 
   ros::spin();
   return 0;

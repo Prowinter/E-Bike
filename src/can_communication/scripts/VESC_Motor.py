@@ -2,12 +2,15 @@ import can
 import rospy
 import struct
 from can_communication.msg import *
+from ctypes import *
 
 CAN_PACKET_SET_DUTY   = 0x00
 CAN_PACKET_SET_RPM    = 0x03
 CAN_PACKET_STATUS_1   = 0x09
+CAN_PACKET_STATUS_2   = 0x0E
 CAN_PACKET_STATUS_5   = 0x1B
 
+Roll_Offset = 5.55
 VESC_ID_1 = 0x68
 VESC_ID_2 = 0x69
 
@@ -15,6 +18,7 @@ class VESC_Motor:
     def __init__(self ,id ,bus ,Publisher):
         self.ID = id
         self.bus = bus
+        self.motor_roll = 0
         self.motor_rpm = 0
         self.motor_duty = 0.0
         self.motor_voltage = 0.0
@@ -73,7 +77,6 @@ class VESC_Motor:
                 rpm_uint16 = msg.data[6] << 8 | msg.data[7]
                 rpm_int16 = struct.pack('H', rpm_uint16)
                 self.motor_duty = float(struct.unpack('h', rpm_int16)[0])/1000.0
-
                 # rospy.loginfo("VESC_Motor ID:{} motor_rpm:{} motor_current:{} motor_duty:{}".format(self.ID,self.motor_rpm,self.motor_current,self.motor_duty))
                 if(self.ID == VESC_ID_1):
                     msg = Bicycle()
@@ -81,6 +84,8 @@ class VESC_Motor:
                     msg.Motor_rpm = self.motor_rpm
                     msg.Motor_duty = self.motor_duty
                     msg.Bicycle_voltage = self.motor_voltage
+                    msg.Motor_Roll = self.motor_roll
+                    # rospy.logwarn("VESC_Motor ID:{} motor_roll:{}".format(self.ID,self.motor_roll))
                     self.Publisher.publish(msg)
                 elif(self.ID == VESC_ID_2):
                     msg = Bicycle()
@@ -92,7 +97,19 @@ class VESC_Motor:
                 rospy.logwarn("VESC_Motor ID:{} CAN_STATUS_1 DLC wrong ...".format(self.ID))
         elif (msg.arbitration_id >> 8 & 0xFF == CAN_PACKET_STATUS_5):
             if(msg.dlc == 8):
-                self.motor_voltage = float(msg.data[6] << 4 | msg.data[5])/1e1
-                #rospy.loginfo("Bicycle_voltage:{}".format(self.motor_voltage))
+                # Convert to C int32
+                # motor_int_pitch = msg.data[0] << 24 | msg.data[1] << 16 | msg.data[2] << 8 | msg.data[3]
+                # motor_pitch = float(struct.unpack('i', struct.pack('I', motor_int_pitch))[0])/1e4/3.14115926*180
+                motor_int_roll = msg.data[4] << 24 | msg.data[5] << 16 | msg.data[6] << 8 | msg.data[7]
+                motor_roll = float(struct.unpack('i', struct.pack('I', motor_int_roll))[0])/1e4/3.14115926*180 - Roll_Offset
+                self.motor_roll = round(motor_roll, 4)
+                # print("Pitch={}\n".format(self.motor_pitch))
+
             else:
                 rospy.logwarn("VESC_Motor ID:{} CAN_STATUS_5 DLC wrong ...".format(self.ID))
+        # elif (msg.arbitration_id >> 8 & 0xFF == CAN_PACKET_STATUS_5):
+        #     if(msg.dlc == 8):
+        #         self.motor_voltage = float(msg.data[6] << 4 | msg.data[5])/1e1
+        #         #rospy.loginfo("Bicycle_voltage:{}".format(self.motor_voltage))
+        #     else:
+        #         rospy.logwarn("VESC_Motor ID:{} CAN_STATUS_5 DLC wrong ...".format(self.ID))

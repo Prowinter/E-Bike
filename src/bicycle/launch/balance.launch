@@ -1,0 +1,14 @@
+<launch>
+  <node name="bicycle_can_communication" pkg="can_communication" type="Service.py" />
+  <node name="bicycle_balance" pkg="bicycle" type="bicycle_balance" />
+    <!-- <node pkg="bicycle" type="bicycle_balance" name="bicycle_balance" /> -->
+  <node pkg="rqt_plot" type="rqt_plot" name="roll_plot" args="/Bicycle/VESC_Motor_1_info/Motor_Roll">   
+    <param name="geometry" value="600x400" />
+  </node>
+  <node pkg="rqt_plot" type="rqt_plot" name="rpm_plot" args="/Bicycle/VESC_Motor_1_info/Motor_rpm">
+      <param name="geometry" value="600x400" />
+  </node>
+  <!-- <node pkg="dynamic_reconfigure" type="dynamic_reconfigure" name="my_node">
+    <param name="config" type="string" value="DynamicLQR.cfg" />
+  </node> -->
+</launch>
