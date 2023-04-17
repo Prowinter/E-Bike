@@ -1,0 +1,2 @@
+int32 LeftHatX
+int32 LeftHatY
