@@ -10,7 +10,8 @@ CAN_PACKET_STATUS_1   = 0x09
 CAN_PACKET_STATUS_2   = 0x0E
 CAN_PACKET_STATUS_5   = 0x1B
 
-Roll_Offset = 5.55
+Roll_Offset = 4.7161
+Roll_Gyro_Offset = -1.4287364
 VESC_ID_1 = 0x68
 VESC_ID_2 = 0x69
 
@@ -19,13 +20,14 @@ class VESC_Motor:
         self.ID = id
         self.bus = bus
         self.motor_roll = 0
+        self.motor_roll_gyro = 0
         self.motor_rpm = 0
         self.motor_duty = 0.0
         self.motor_voltage = 0.0
         self.motor_current = 0.0
         self.SetRPMTASK = None
         self.SetDutyTASK = None
-        self.MaxRPM = 12000
+        self.MaxRPM = 25000
         self.MaxDuty = 0.2
         self.Publisher = Publisher
 
@@ -85,6 +87,7 @@ class VESC_Motor:
                     msg.Motor_duty = self.motor_duty
                     msg.Bicycle_voltage = self.motor_voltage
                     msg.Motor_Roll = self.motor_roll
+                    msg.Motor_Roll_Gyro = self.motor_roll_gyro
                     # rospy.logwarn("VESC_Motor ID:{} motor_roll:{}".format(self.ID,self.motor_roll))
                     self.Publisher.publish(msg)
                 elif(self.ID == VESC_ID_2):
@@ -100,10 +103,14 @@ class VESC_Motor:
                 # Convert to C int32
                 # motor_int_pitch = msg.data[0] << 24 | msg.data[1] << 16 | msg.data[2] << 8 | msg.data[3]
                 # motor_pitch = float(struct.unpack('i', struct.pack('I', motor_int_pitch))[0])/1e4/3.14115926*180
+                motor_int_roll_gyro = msg.data[0] << 24 | msg.data[1] << 16 | msg.data[2] << 8 | msg.data[3]
+                motor_roll_gyro = float(struct.unpack('i', struct.pack('I', motor_int_roll_gyro))[0])/1e4 - Roll_Gyro_Offset
+                self.motor_roll_gyro = round(motor_roll_gyro, 4)
+
                 motor_int_roll = msg.data[4] << 24 | msg.data[5] << 16 | msg.data[6] << 8 | msg.data[7]
                 motor_roll = float(struct.unpack('i', struct.pack('I', motor_int_roll))[0])/1e4/3.14115926*180 - Roll_Offset
                 self.motor_roll = round(motor_roll, 4)
-                # print("Pitch={}\n".format(self.motor_pitch))
+                print("motor_roll_gyro={},motor_roll={}\n".format(self.motor_roll_gyro,self.motor_roll))
 
             else:
                 rospy.logwarn("VESC_Motor ID:{} CAN_STATUS_5 DLC wrong ...".format(self.ID))
