@@ -10,6 +10,7 @@ project(bicycle)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   can_communication
+  ros_odrive
   dynamic_reconfigure
   tf
   tf2
@@ -52,6 +53,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
+  Bicycle_Roll.msg
   Gamepad_Control.msg
 )
 

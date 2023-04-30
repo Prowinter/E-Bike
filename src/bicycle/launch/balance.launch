@@ -2,15 +2,21 @@
   <node name="bicycle_can_communication" pkg="can_communication" type="Service.py" />
   <node name="bicycle_balance" pkg="bicycle" type="bicycle_balance" />
     <!-- <node pkg="bicycle" type="bicycle_balance" name="bicycle_balance" /> -->
-  <!-- <node pkg="rqt_plot" type="rqt_plot" name="roll_plot" args="/Bicycle/VESC_Motor_1_info/Motor_Roll">   
+  <node pkg="rqt_plot" type="rqt_plot" name="roll_plot" args="/bicycle/fdi/imu/Roll">   
     <param name="geometry" value="600x400" />
   </node>
-  <node pkg="rqt_plot" type="rqt_plot" name="rpm_plot" args="/Bicycle/VESC_Motor_1_info/Motor_rpm">
+  <node pkg="rqt_plot" type="rqt_plot" name="rpm_plot" args="/Bicycle/Odrive_Motor_info/Motor_rpm">
       <param name="geometry" value="600x400" />
   </node>
-  <node pkg="rqt_plot" type="rqt_plot" name="roll_gyro_plot" args="/Bicycle/VESC_Motor_1_info/Motor_Roll_Gyro">
+  <node pkg="rqt_plot" type="rqt_plot" name="current_plot" args="/Bicycle/Odrive_Motor_info/Motor_current">
+      <param name="geometry" value="600x400" />
+  </node>
+  <!-- <node pkg="rqt_plot" type="rqt_plot" name="rpm_plot" args="/ros_odrive/odrive_msg_355E30753533/vel0">
       <param name="geometry" value="600x400" />
   </node> -->
+  <node pkg="rqt_plot" type="rqt_plot" name="roll_gyro_plot" args="/bicycle/fdi/imu/Roll_Velocitys">
+      <param name="geometry" value="600x400" />
+  </node>
   <node pkg="fdilink_ahrs" name="ahrs_driver" type="ahrs_driver" output="screen" >
     <param name="debug"  value="false"/>
     <param name="port"  value="/dev/ttyUSB0"/>

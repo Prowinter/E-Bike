@@ -50,14 +50,16 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  Bicycle.msg
+  Bicycle_msg.msg
+  Odrive_msg.msg
 )
 
 
 add_service_files(
   FILES
-  CAN.srv
-  VESC.srv
+  CAN_srv.srv
+  VESC_srv.srv
+  Odrive_srv.srv
  )
 
 ## Generate actions in the 'action' folder
